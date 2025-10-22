@@ -8,10 +8,6 @@ body {
   vertical-align: text-bottom;
 }
 
-/* * BARRA LATERAL REMOVIDA
- * O código abaixo é apenas para o Navbar
- */
-
 /* * Navbar
  */
 
@@ -42,5 +38,4 @@ body {
 
 .form-control-dark:focus {
   border-color: transparent;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
-}
+  box-shadow: 0 0 0 3px rgba(255, 255, 2
