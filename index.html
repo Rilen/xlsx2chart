@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard Excel Evolução por Categoria (Gráfico Único)</title>
+    <title>Dashboard Excel Evolução por Subcategoria</title>
 
     <link href="bootstrap.min.css" rel="stylesheet"> 
     <link href="dashboard.css" rel="stylesheet">
@@ -13,26 +13,17 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" crossorigin="anonymous"></script>
     
     <style>
-      /* Altura do Gráfico */
-      .chart-canvas {
-      /* Mantenha o max-height para limitar o gráfico em telas pequenas */
-      max-height: 80vh; 
-      /* REMOVA ou COMENTE a altura mínima e a altura fixa! */
-      /* min-height: 650px; */ 
-      /* height: 700px !important; */
-      }
-
-  #myChart {
-      /* Remova as regras de altura fixas daqui também */
-      /* height: 700px !important; */
-      /* max-height: 80vh; */
-      }
-  
-      /* Use apenas esta regra para a área do gráfico */
+      /* * CRÍTICO PARA RESPONSIVIDADE (FLUIDEZ): 
+       * A altura é definida no contêiner (#chart-area), 
+       * e o Chart.js se adapta a ele (maintainAspectRatio: false).
+       */
       #chart-area {
-      position: relative; /* Importante para o Chart.js */
-      height: 70vh; /* Define uma altura flexível (70% da altura da tela) */
-      max-width: 100%;
+          position: relative; 
+          height: 70vh; /* Altura flexível: 70% da altura da tela */
+          max-width: 100%;
+      }
+      .chart-canvas {
+          max-height: 100%; 
       }
       
       main {
@@ -68,7 +59,7 @@
     <main class="col-12 px-md-4"> 
       
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Quantidade por Mês e Categoria</h1>
+        <h1 class="h2">Quantidade por Mês e Contribuição de Subcategoria</h1>
         <div class="btn-toolbar mb-2 mb-md-0 d-flex align-items-center">
             
             <div class="me-3">
@@ -94,7 +85,7 @@
       
       <div id="error-message" class="error-message"></div>
 
-      <div id="chart-area" class="my-4 w-100 chart-canvas">
+      <div id="chart-area" class="my-4 w-100">
           <h3 class="text-center text-muted pt-5">Faça o upload do arquivo para visualizar o dashboard.</h3>
       </div>
       
