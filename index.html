@@ -15,12 +15,24 @@
     <style>
       /* Altura do Gráfico */
       .chart-canvas {
-        min-height: 650px; 
-        max-height: 80vh; 
+      /* Mantenha o max-height para limitar o gráfico em telas pequenas */
+      max-height: 80vh; 
+      /* REMOVA ou COMENTE a altura mínima e a altura fixa! */
+      /* min-height: 650px; */ 
+      /* height: 700px !important; */
       }
-      #myChart {
-        height: 700px !important;
-        max-height: 80vh;
+
+  #myChart {
+      /* Remova as regras de altura fixas daqui também */
+      /* height: 700px !important; */
+      /* max-height: 80vh; */
+      }
+  
+      /* Use apenas esta regra para a área do gráfico */
+      #chart-area {
+      position: relative; /* Importante para o Chart.js */
+      height: 70vh; /* Define uma altura flexível (70% da altura da tela) */
+      max-width: 100%;
       }
       
       main {
