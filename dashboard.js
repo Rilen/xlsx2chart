@@ -3,11 +3,9 @@
 (function () {
   'use strict'
 
-  // --- Funções de inicialização ---
-  
-  // Variável para armazenar a última versão dos dados processados
-  let lastProcessedChartData = null; 
+  // --- Variáveis de Estado ---
   let myChartInstance = null;
+  let lastProcessedChartData = null; 
   
   const colorPalette = [
       '#0d6efd', '#dc3545', '#198754', '#ffc107', 
@@ -22,19 +20,17 @@
   };
   
   // ---------------------------------------------
-  // 1. VARIÁVEIS E INICIALIZAÇÃO DO DOM (GARANTINDO QUE EXISTAM)
+  // 1. INICIALIZAÇÃO DO DOM E EVENTOS
   // ---------------------------------------------
   
-  // NOVO: Inicializa variáveis DOM dentro de window.onload para garantir que o HTML está carregado
   window.onload = function() {
-    
       feather.replace({ 'aria-hidden': true } );
 
       const uploadInput = document.getElementById('excel-upload');
       const chartTypeSelect = document.getElementById('chart-type-select');
-      
+
       if (!uploadInput) {
-          console.error("ERRO FATAL DE INICIALIZAÇÃO: Elemento de upload 'excel-upload' não encontrado no HTML.");
+          console.error("ERRO FATAL DE INICIALIZAÇÃO: Elemento de upload 'excel-upload' não encontrado.");
           return;
       }
 
@@ -43,7 +39,6 @@
       if (chartTypeSelect) {
           chartTypeSelect.addEventListener('change', () => {
               if (lastProcessedChartData) {
-                  // Redesenha usando o novo tipo selecionado
                   drawChart(lastProcessedChartData); 
               }
           });
@@ -59,7 +54,6 @@
     const file = files[0];
     const reader = new FileReader();
 
-    // VARIÁVEIS DOM obtidas aqui dentro da função, onde a execução é garantida
     const statusElement = document.getElementById('upload-status');
     const errorElement = document.getElementById('error-message');
     const table = document.getElementById('data-table');
@@ -101,7 +95,6 @@
             const chartData = prepareDataForStackedBarChart(combinedData);
             lastProcessedChartData = chartData;
             
-            // Desenha usando o tipo atual do seletor (Barra Empilhada por padrão)
             drawChart(chartData);
             
             const tableData = aggregateDataForTable(combinedData);
@@ -111,9 +104,9 @@
 
         } catch (error) {
             errorElement.textContent = `ERRO FATAL: ${error.message}`;
-            statusElement.textContent = 'Falha no processamento. Verifique o console (F12).';
+            statusElement.textContent = 'Falha no processamento.';
             if (myChartInstance) myChartInstance.destroy();
-            chartArea.innerHTML = '<h3 class="text-center text-muted pt-5">Falha ao processar dados. Verifique a estrutura do Excel.</h3>';
+            chartArea.innerHTML = '<h3 class="text-center text-muted pt-5">Falha ao processar dados. Verifique a estrutura do Excel no console (F12).</h3>';
             console.error("Erro no processamento do arquivo Excel:", error);
         }
     };
@@ -122,7 +115,7 @@
   }
   
   // ---------------------------------------------
-  // FUNÇÃO DE LEITURA DA ABA (ASSUMIDA COMO CORRETA PARA O MODELO DE MULTI-CABEÇALHO)
+  // FUNÇÃO DE LEITURA DA ABA (Multi-Cabeçalho)
   // ---------------------------------------------
   function processSheetData(worksheet, monthYear) {
       const dataAsArray = XLSX.utils.sheet_to_json(worksheet, { 
@@ -167,7 +160,7 @@
   }
 
   // ---------------------------------------------
-  // 2. AGRUPAMENTO DE DADOS PRINCIPAL (Mantida a lógica de agregação)
+  // 2. AGRUPAMENTO DE DADOS PRINCIPAL
   // ---------------------------------------------
   function prepareDataForStackedBarChart(data) {
       const salesByMonthAndSubcategory = {};
@@ -230,16 +223,18 @@
           pieData: pieData
       };
   }
-  
+
   // ---------------------------------------------
-  // 3. FUNÇÃO PRINCIPAL DE DESENHO
+  // 3. FUNÇÃO PRINCIPAL DE DESENHO (FINAL)
   // ---------------------------------------------
   function drawChart(chartData) {
     const chartTypeSelect = document.getElementById('chart-type-select');
-    const chartType = chartTypeSelect ? chartTypeSelect.value : 'bar'; // Padrão é 'bar'
     const chartArea = document.getElementById('chart-area');
+      
+    const chartType = chartTypeSelect ? chartTypeSelect.value : 'bar'; 
 
-    chartArea.innerHTML = '<canvas id="dynamicChart" class="chart-canvas"></canvas>';
+    // Remove o canvas antigo e injeta o novo
+    chartArea.innerHTML = '<canvas id="dynamicChart"></canvas>';
     const ctx = document.getElementById('dynamicChart').getContext('2d');
     
     if (myChartInstance) {
@@ -249,8 +244,8 @@
     let config;
     
     const baseOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true,             // CRÍTICO para se adaptar ao contêiner
+        maintainAspectRatio: false,   // CRÍTICO para usar a altura definida por CSS (70vh)
         legend: { display: true, position: 'bottom' }
     };
     
@@ -297,7 +292,7 @@
                      display: true,
                      text: 'Distribuição Total de Quantidade Vendida por Subcategoria'
                  },
-                 scales: {}
+                 scales: {} // Sem eixos
             }
         };
     }
@@ -306,16 +301,14 @@
         myChartInstance = new Chart(ctx, config);
     }
   }
-
-  // --- Funções Utilitárias ---
   
+  // --- Funções Utilitárias (Mantidas) ---
   function getSortableMonthKey(monthYearString) {
       const parts = monthYearString.toUpperCase().split(/[\s-]+/).filter(p => p);
       if (parts.length >= 2) {
           const monthName = parts[0];
           const year = parts[parts.length - 1];
           const monthCode = MONTH_ORDER[monthName] || '99'; 
-
           if (year && year.length === 4) {
               return `${year}-${monthCode}`;
           }
