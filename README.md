@@ -2,7 +2,7 @@ Este projeto é um **Dashboard Dinâmico Web** hospedado no **GitHub Pages**, ut
 
 ![Excel para gráfico](http://rilen.github.io/portfolio_ds/images/gallery/thumbs/01.jpg "Excel para gráfico")
 
-link <a href="https://rilen.github.io/graph_xlsx/" target="_blank">DEMONSTRAÇÃO</a>
+link <a href="https://rilen.github.io/xlsx2chart/" target="_blank">DEMONSTRAÇÃO</a>
 
-link do arquivo exemplo <a href="https://rilen.github.io/graph_xlsx/venda.xlsx" target="_blank">XLSX</a>
+link do arquivo exemplo <a href="https://rilen.github.io/xlsx2chart/venda.xlsx" target="_blank">XLSX</a>
 
