@@ -245,7 +245,7 @@
     
     const baseOptions = {
         responsive: true,
-        maintainAspectRatio: ['pie', 'doughnut'].includes(chartType),  // True for pie/doughnut to keep circular; false for bar/line
+        maintainAspectRatio: ['pie', 'doughnut'].includes(chartType),
         legend: { display: true, position: 'bottom' }
     };
     
