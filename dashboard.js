@@ -244,8 +244,8 @@
     let config;
     
     const baseOptions = {
-        responsive: true,             // CRÍTICO para se adaptar ao contêiner
-        maintainAspectRatio: false,   // CRÍTICO para usar a altura definida por CSS (70vh)
+        responsive: true,
+        maintainAspectRatio: ['pie', 'doughnut'].includes(chartType),  // True for pie/doughnut to keep circular; false for bar/line
         legend: { display: true, position: 'bottom' }
     };
     
