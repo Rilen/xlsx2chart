@@ -51,8 +51,8 @@ body {
 }
 
 .chart-canvas {
-  width: 100% !important;
-  height: auto !important;
-  display: block;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important; /* Remove restrição de altura */
 }
 
