@@ -14,3 +14,12 @@ link <a href="https://rilen.github.io/xlsx2chart/" target="_blank">DEMONSTRAÇÃ
 
 link do arquivo exemplo <a href="https://rilen.github.io/xlsx2chart/venda.xlsx" target="_blank">XLSX</a>
 
+---
+
+## 🎯 Portfólio Completo e Projetos Detalhados
+
+Para uma experiência visual completa do meu trabalho, dos modelos de Machine Learning e dos Dashboards que desenvolvi, visite meu portfólio interativo:
+
+➡️ **[ACESSE O MEU SHOWCASE (PORTFÓLIO VISUAL) AQUI](https://rilen.github.io/portfolio/)**
+
+---
