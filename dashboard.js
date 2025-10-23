@@ -234,7 +234,7 @@
     const chartType = chartTypeSelect ? chartTypeSelect.value : 'bar'; 
 
     // Remove o canvas antigo e injeta o novo
-    chartArea.innerHTML = '<canvas id="dynamicChart"></canvas>';
+    chartArea.innerHTML = '<canvas id="dynamicChart" class="chart-canvas"></canvas>';
     const ctx = document.getElementById('dynamicChart').getContext('2d');
     
     if (myChartInstance) {
