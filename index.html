@@ -18,13 +18,18 @@
        * e o Chart.js se adapta a ele (maintainAspectRatio: false).
        */
       #chart-area {
-          position: relative; 
-          height: 70vh; /* Altura flexível: 70% da altura da tela */
-          max-width: 100%;
+          position: relative;
+          width: 100%;
+          height: auto;
+          min-height: 300px; /* Altura mínima para evitar colapso */
       }
+      
       .chart-canvas {
-          max-height: 100%; 
+          width: 100% !important;
+          height: auto !important;
+          display: block;
       }
+
       
       main {
         padding-top: 2rem;
