@@ -40,3 +40,19 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+/* Gráfico responsivo */
+#chart-area {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 300px; /* Garante altura mínima */
+  padding-bottom: 2rem;
+}
+
+.chart-canvas {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
