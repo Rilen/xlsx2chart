@@ -20,8 +20,9 @@
       #chart-area {
           position: relative;
           width: 100%;
-          height: auto;
-          min-height: 300px; /* Altura mínima para evitar colapso */
+          height: 0;
+          padding-bottom: 56.25%;  /* 16:9 ratio; adjust to 100% for square (pie/doughnut) */
+          min-height: 300px;
       }
       
       .chart-canvas {
