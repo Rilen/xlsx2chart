@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard Excel Evolução por Subcategoria - 1.04</title>
+    <title>Dashboard Excel Evolução por Subcategoria - 1.02</title>
     <link href="bootstrap.min.css" rel="stylesheet">
     <link href="dashboard.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -63,10 +63,9 @@
               <div class="upload-area">
                 <label for="excel-upload" class="btn btn-sm btn-primary">
                   <span data-feather="upload"></span>
-                  Fazer Upload do arquivo XLSX Mês/Ano
+                  Fazer Upload dos arquivos XLSX Mês/Ano
                 </label>
-                <!-- Adicionado 'multiple' para permitir seleção de vários arquivos -->
-                <input type="file" id="excel-upload" accept=".xlsx,.xls" style="display:none;" multiple/> 
+                <input type="file" id="excel-upload" accept=".xlsx,.xls,.csv" style="display:none;" multiple/> 
                 <div class="mt-2" id="upload-status">Aguardando Upload...</div>
               </div>
               <div class="mt-2" id="upload-status">
@@ -76,9 +75,8 @@
           </div>
           <div id="error-message" class="error-message"></div>
           <div id="chart-area" class="my-4 w-100">
-            <!-- Adicionado Canvas para renderização do gráfico -->
             <canvas id="myChart"></canvas> 
-            <h3 class="text-center text-muted pt-5" id="initial-message">Faça o upload do arquivo para visualizar o dashboard.</h3>
+            <h3 class="text-center text-muted pt-5" id="initial-message">Faça o upload do(s) arquivo(s) para visualizar o dashboard.</h3>
           </div>
           <h2 class="mt-5">Quantidade Consolidada por Mês</h2>
           <div class="table-responsive">
