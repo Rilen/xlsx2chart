@@ -49,7 +49,7 @@ body {
 
 .chart-canvas {
     width: 100% !important;
-    height: auto !important;
+    height: 100% !important;
     max-height: none !important;
 }
 
