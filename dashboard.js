@@ -17,8 +17,8 @@
     // Mapeamento para ordenação correta dos meses
     const MONTH_ORDER = {
         'JANEIRO': '01', 'FEVEREIRO': '02', 'MARÇO': '03', 'ABRIL': '04',
-        'MAIO': '05', 'JUNHO': '06', 'JULHO': '07', 'AGOSTO': '08',
-        'SETEMBRO': '09', 'OUTUBRO': '10', 'NOVEMBRO': '11', 'DEZEMBRO': '12'
+ 'MAIO': '05', 'JUNHO': '06', 'JULHO': '07', 'AGOSTO': '08',
+ 'SETEMBRO': '09', 'OUTUBRO': '10', 'NOVEMBRO': '11', 'DEZEMBRO': '12'
     };
 
     // ---------------------------------------------
@@ -105,9 +105,14 @@
         const dataRows = dataArray.slice(dataStartRowIndex);
 
         dataRows.forEach((row) => {
-            // Se a primeira coluna (Nº SEMANA) não for um número válido, ignore (provavelmente uma linha de total ou resumo)
+            // Se a primeira coluna (Nº SEMANA) não for um número válido ou for linha de total, ignore
+            const firstCol = String(row[0] || '').toUpperCase().trim();
+            if (firstCol === '' || firstCol.includes('TOTAL')) return;
+
             const weekNumber = parseFloat(row[0]);
-            if (isNaN(weekNumber) || weekNumber <= 0) return;
+            if (isNaN(weekNumber) && row[0] !== undefined) {
+                return; // Ignora linhas que não são números válidos no campo "Nº SEMANA"
+            }
 
             columnMap.forEach(col => {
                 // Garante que o valor da célula é tratado como número (e lida com valores vazios/nulos)
@@ -124,6 +129,9 @@
                 }
             });
         });
+
+        // Log para ajudar na depuração
+        console.log(`[DASHBOARD DEBUG] Arquivo ${monthYearKey}: ${normalizedData.length} registros válidos encontrados.`);
 
         return normalizedData;
     }
@@ -185,6 +193,8 @@
             'Quantidade Total': monthlyTotalMap[month].toLocaleString('pt-BR', { maximumFractionDigits: 0 })
         }));
 
+        console.log(`[DASHBOARD DEBUG] Agregação concluída. Meses: ${months.length}, Subcategorias: ${subcategories.length}`);
+
         return { months, subcategories, groupedData, monthlyTotals, totalByCategory, colorMap };
     }
 
@@ -195,15 +205,20 @@
         const chartCanvas = document.getElementById('myChart');
         const initialMessage = document.getElementById('initial-message');
 
-        if (!data) return;
+        if (!data || data.months.length === 0) {
+            console.error("[DASHBOARD ERROR] Dados insuficientes para renderizar o gráfico.");
+            if (chartCanvas) chartCanvas.style.display = 'none';
+            if (initialMessage) initialMessage.style.display = 'block';
+            return;
+        }
 
         if (myChartInstance) {
             myChartInstance.destroy();
         }
 
-        // Esconde a mensagem inicial e exibe o canvas
         if (chartCanvas) {
             chartCanvas.style.display = 'block';
+            chartCanvas.height = chartCanvas.offsetWidth;
             if (initialMessage) initialMessage.style.display = 'none';
         } else {
             console.error("Elemento Canvas 'myChart' não encontrado. Não é possível renderizar.");
@@ -211,11 +226,14 @@
         }
 
         const datasets = [];
-        let config = {};
         let options = {};
 
         if (chartType === 'bar' || chartType === 'line') {
-            // GRÁFICOS DE SÉRIE TEMPORAL (Barra Empilhada e Linha)
+            // --- GRÁFICOS DE SÉRIE TEMPORAL (Barra Empilhada e Linha) ---
+
+            // Define o tipo principal para Bar ou Line
+            let chartBaseType = chartType === 'line' ? 'line' : 'bar';
+
             data.subcategories.forEach(sub => {
                 const subColor = data.colorMap[sub];
                 const subData = data.months.map(month => data.groupedData[month][sub] || 0);
@@ -223,16 +241,18 @@
                 datasets.push({
                     label: sub,
                     data: subData,
-                    backgroundColor: subColor,
+                    backgroundColor: chartType === 'bar' ? subColor : 'transparent', // Transparente para linha
                     borderColor: subColor,
                     fill: chartType === 'line' ? false : true,
+                    // O stack só é aplicado para barras empilhadas
                     stack: chartType === 'bar' ? 'Stack 1' : undefined,
-                    type: chartType,
+                    // NÃO definimos 'type' no dataset, deixamos o tipo principal determinar,
+                    // exceto se precisarmos de tipos mistos (o que não é o caso aqui).
                 });
             });
 
-            config = {
-                type: 'bar', // Tipo padrão
+            const config = {
+                type: chartBaseType, // Tipo principal definido aqui: 'bar' ou 'line'
                 data: {
                     labels: data.months,
                     datasets: datasets,
@@ -244,6 +264,7 @@
                 maintainAspectRatio: false,
                 scales: {
                     xAxes: [{
+                        // O empilhamento só funciona para barras
                         stacked: chartType === 'bar',
                         ticks: { autoSkip: false }
                     }],
@@ -261,13 +282,16 @@
                     intersect: true
                 }
             };
+
+            myChartInstance = new Chart(chartCanvas, { ...config, options: options });
+
         } else {
-            // GRÁFICOS DE TOTAL GERAL (Pizza e Rosca)
+            // --- GRÁFICOS DE TOTAL GERAL (Pizza e Rosca) ---
             const totalLabels = Object.keys(data.totalByCategory);
             const totalQuantities = Object.values(data.totalByCategory);
             const totalColors = totalLabels.map(label => data.colorMap[label]);
 
-            config = {
+            const config = {
                 type: chartType,
                 data: {
                     labels: totalLabels,
@@ -295,9 +319,11 @@
                     animateRotate: true
                 }
             };
+
+            myChartInstance = new Chart(chartCanvas, { ...config, options: options });
         }
 
-        myChartInstance = new Chart(chartCanvas, { ...config, options: options });
+        console.log("[DASHBOARD DEBUG] Gráfico renderizado com sucesso.");
     }
 
     /**
@@ -336,6 +362,12 @@
     // ---------------------------------------------
 
     window.onload = function() {
+        // Verifica se as bibliotecas essenciais carregaram
+        if (typeof XLSX === 'undefined' || typeof Chart === 'undefined') {
+            document.getElementById('error-message').textContent = 'Erro: Bibliotecas XLSX ou Chart.js não carregaram. Verifique sua conexão ou referências.';
+            return;
+        }
+
         feather.replace({ 'aria-hidden': true } );
 
         const uploadInput = document.getElementById('excel-upload');
@@ -395,14 +427,7 @@
                     reject();
                 }
             };
-            // Verifica a extensão do arquivo para garantir a leitura correta de CSV/XLSX
-            if (file.name.toLowerCase().endsWith('.csv')) {
-                // Para CSV, pode ser necessário um tratamento especial de encoding, mas o XLSX.read com {type: 'array'} geralmente lida bem com buffers.
-                reader.readAsArrayBuffer(file);
-            } else {
-                reader.readAsArrayBuffer(file);
-            }
-
+            reader.readAsArrayBuffer(file);
         });
 
         // Manipulador de upload de arquivo
@@ -446,6 +471,13 @@
         chartTypeSelect.addEventListener('change', (event) => {
             if (lastProcessedChartData) {
                 renderChart(lastProcessedChartData, event.target.value);
+            }
+        });
+
+        // Ajusta o tamanho do canvas na mudança de tamanho da janela para responsividade
+        window.addEventListener('resize', () => {
+            if (myChartInstance) {
+                myChartInstance.resize();
             }
         });
     };
