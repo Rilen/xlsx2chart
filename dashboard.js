@@ -246,8 +246,7 @@
                     fill: chartType === 'line' ? false : true,
                     // O stack só é aplicado para barras empilhadas
                     stack: chartType === 'bar' ? 'Stack 1' : undefined,
-                    // NÃO definimos 'type' no dataset, deixamos o tipo principal determinar,
-                    // exceto se precisarmos de tipos mistos (o que não é o caso aqui).
+                    type: chartBaseType, // CORREÇÃO: Define o tipo explicitamente no dataset
                 });
             });
 
