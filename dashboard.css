@@ -53,3 +53,8 @@ body {
     max-height: none !important;
 }
 
+/* dashboard.css: centralização e espaçamento */
+main { text-align:center; }
+.upload-area { display:inline-block; }
+#chart-area, .table-responsive { margin-left:auto; margin-right:auto; }
+

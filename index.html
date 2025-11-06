@@ -47,55 +47,39 @@
     </header>
     <div class="container-fluid">
       <div class="row">
-        <main class="col-12 px-md-4">
-          <h1 class="h2">Quantidade X Mês e Contribuição de Subcategoria</h1>
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <div class="btn-toolbar mb-2 mb-md-0 d-flex align-items-center">
-              <div class="me-3">
-                <label for="chart-type-select" class="form-label mb-0 me-2">Tipo de Gráfico:</label>
-                <select id="chart-type-select" class="form-select form-select-sm d-inline-block w-auto">
-                  <option value="bar">Barra Empilhada (Mês/Subcategoria)</option>
-                  <option value="line">Linha</option>
-                  <option value="pie">Pizza (Total Geral)</option>
-                  <option value="doughnut">Rosca (Total Geral)</option>
-                </select>
-              </div>
-              <div class="upload-area">
-                <label for="excel-upload" class="btn btn-sm btn-primary">
-                  <span data-feather="upload"></span>
-                  Fazer Upload dos arquivos XLSX Mês/Ano
-                </label>
-                <input type="file" id="excel-upload" accept=".xlsx,.xls,.csv" style="display:none;" multiple/>
-                <div class="mt-2" id="upload-status">Aguardando Upload...</div>
-              </div>
-              <div class="mt-2" id="upload-status">
-                link do arquivo exemplo <a href="https://rilen.github.io/xlsx2chart/venda.xlsx" target="_blank">XLSX</a>
-              </div>
-            </div>
-          </div>
-          <div id="error-message" class="error-message"></div>
-          <div id="chart-area" class="my-4 w-100">
-            <canvas id="myChart" class="chart-canvas"></canvas>
-            <h3 class="text-center text-muted pt-5" id="initial-message">Faça o upload do(s) arquivo(s) para visualizar o dashboard.</h3>
-          </div>
-          <h2 class="mt-5">Quantidade Consolidada por Mês</h2>
-          <div class="table-responsive">
-            <table class="table table-striped table-sm" id="data-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Mês/Ano</th>
-                  <th>Quantidade Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="3">Nenhum dado mensal consolidado encontrado.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </main>
+        <main class="col-12 px-md-4 text-center">
+  <h1 class="h2 mb-4">Quantidade X Mês e Contribuição de Subcategoria</h1>
+  <div class="d-flex justify-content-center flex-wrap gap-3 align-items-center pt-3 pb-2 mb-4 border-bottom">
+    <div>
+      <label for="chart-type-select" class="form-label mb-0 me-2">Tipo:</label>
+      <select id="chart-type-select" class="form-select form-select-sm d-inline-block w-auto">
+        <option value="bar">Barra Empilhada</option>
+        <option value="line">Linha</option>
+        <option value="pie">Pizza</option>
+        <option value="doughnut">Rosca</option>
+      </select>
+    </div>
+    <div class="upload-area">
+      <label for="excel-upload" class="btn btn-sm btn-primary">
+        <span data-feather="upload"></span> Upload XLSX
+      </label>
+      <input type="file" id="excel-upload" accept=".xlsx,.xls,.csv" multiple style="display:none;">
+      <div class="mt-2 small" id="upload-status">Aguardando...</div>
+    </div>
+    <div class="mt-2 small">
+      Exemplo: <a href="https://rilen.github.io/xlsx2chart/venda.xlsx" target="_blank">XLSX</a>
+    </div>
+  </div>
+  <div id="error-message" class="error-message mb-3"></div>
+  <div id="chart-area" class="my-4 mx-auto" style="max-width:900px;">
+    <canvas id="myChart" class="chart-canvas"></canvas>
+    <h3 class="text-muted pt-5" id="initial-message">Faça upload para visualizar.</h3>
+  </div>
+  <h2 class="mt-5">Totais Mensais</h2>
+  <div class="table-responsive mx-auto" style="max-width:600px;">
+    <table class="table table-striped table-sm" id="data-table">...</table>
+  </div>
+</main>
       </div>
     </div>
     <script src="bootstrap.bundle.min.js"></script>
