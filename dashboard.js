@@ -31,7 +31,8 @@
    */
   function extractMonthYear(fileName) {
     // Expressão regular para capturar MÊS e ANO. 
-    const match = fileName.match(/(JANEIRO|FEVEREIRO|MARÇO|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)\s-\s(\d{4})/i);
+    // Procura por um dos meses seguido de um hífen e quatro dígitos de ano.
+    const match = fileName.match(/(JANEIRO|FEVEREIRO|MARÇO|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)\s*-\s*(\d{4})/i);
     if (match && match.length >= 3) {
         const month = match[1].toUpperCase();
         const year = match[2];
@@ -85,10 +86,15 @@
           const subcategory = String(headerRow2[i] || '').trim();
 
           if (subcategory && subcategory.toUpperCase() !== 'Nº SEMANA' && subcategory) {
+            // Concatena Categoria e Subcategoria para garantir unicidade, se a categoria não for vazia
+            const finalSubcategoryName = currentCategory && currentCategory !== '' 
+                                         ? `${currentCategory} - ${subcategory}` 
+                                         : subcategory;
+
             columnMap.push({
                 columnIndex: i,
                 category: currentCategory,
-                subcategory: subcategory
+                subcategory: finalSubcategoryName // Nome completo da subcategoria
             });
           }
       }
@@ -357,8 +363,15 @@
                   const monthYearKey = extractMonthYear(file.name);
                   
                   if (!monthYearKey) {
-                      errorMessageDiv.textContent = `Erro no arquivo "${file.name}": Não foi possível extrair Mês/Ano do nome do arquivo.`;
-                      reject();
+                      // Mensagem de erro aprimorada para guiar o usuário sobre o formato do nome do arquivo
+                      if (file.name.toLowerCase().includes('venda.xlsx')) {
+                           errorMessageDiv.textContent = `Erro no arquivo "${file.name}": O nome do arquivo é genérico e não contém Mês/Ano. Por favor, renomeie o arquivo para incluir o mês e ano (ex: "vendas - MARÇO - 2025.xlsx").`;
+                      } else {
+                           errorMessageDiv.textContent = `Erro no arquivo "${file.name}": Não foi possível extrair Mês/Ano do nome do arquivo. O formato esperado é: 'MÊS - AAAA' no nome.`;
+                      }
+                      
+                      // Para a promessa, pois não podemos prosseguir sem a chave de mês/ano
+                      reject(); 
                       return;
                   }
 
@@ -372,7 +385,7 @@
                   
                   resolve(normalizedData);
               } catch (error) {
-                  errorMessageDiv.textContent = `Erro ao ler ou processar o arquivo "${file.name}". Verifique o formato.`;
+                  errorMessageDiv.textContent = `Erro ao ler ou processar o arquivo "${file.name}". Verifique o formato do XLSX e as células de dados.`;
                   console.error('Erro de processamento XLSX:', error);
                   reject();
               }
@@ -386,6 +399,7 @@
         if (files.length === 0) return;
 
         uploadStatus.textContent = `Processando ${files.length} arquivo(s)...`;
+        errorMessageDiv.textContent = ''; // Limpa a mensagem de erro anterior
         allNormalizedData = []; // Limpa dados anteriores
 
         // Processa todos os arquivos em paralelo e espera a conclusão
@@ -404,11 +418,14 @@
                     errorMessageDiv.textContent = '';
                 } else {
                     uploadStatus.textContent = 'Nenhum dado válido encontrado após a consolidação.';
-                    errorMessageDiv.textContent = 'Verifique se os arquivos estão no formato pivot esperado e contêm valores numéricos.';
+                    // Só exibe a mensagem de erro se a Promise.all() não tiver rejeitado com um erro específico (como nome de arquivo)
+                    if (errorMessageDiv.textContent === '') {
+                        errorMessageDiv.textContent = 'Verifique se os arquivos estão no formato pivot esperado e contêm valores numéricos.';
+                    }
                 }
             })
             .catch(() => {
-                // O erro específico já foi setado na função processFile
+                // O erro específico (como nome de arquivo inválido) já foi setado na função processFile
                 uploadStatus.textContent = 'Falha no Upload e processamento de um ou mais arquivos.';
             })
             .finally(() => {
